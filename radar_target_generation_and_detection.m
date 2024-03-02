@@ -76,7 +76,6 @@ end
 
 %% RANGE MEASUREMENT
 
-
 % *%TODO* :
 %reshape the vector into Nr*Nd array. Nr and Nd here would also define the size of
 %Range and Doppler FFT respectively.
@@ -98,12 +97,12 @@ sig_fft1 = sig_fft1(1:Nr/2);
 
 %plotting the range
 figure ('Name','Range from First FFT')
-subplot(2,1,1)
 
- % *%TODO* :
- % plot FFT output 
+% *%TODO* :
+% plot FFT output 
 plot(sig_fft1)
- 
+title('Range from First FFT')
+xlabel('Distance (m)')
 axis ([0 200 0 1]);
 
 
@@ -135,6 +134,10 @@ RDM = 10*log10(RDM) ;
 doppler_axis = linspace(-100,100,Nd);
 range_axis = linspace(-200,200,Nr/2)*((Nr/2)/400);
 figure,surf(doppler_axis,range_axis,RDM);
+title('Range and Velocity from Second FFT')
+xlabel('Velocity (m/s)')
+ylabel('Distance (m)')
+
 
 %% CFAR implementation
 
@@ -157,8 +160,6 @@ offset = 4.5;
 
 % *%TODO* :
 %Create a vector to store noise_level for each iteration on training cells
-% training_cell_sum = zeros(1,1);
-
 
 % *%TODO* :
 %design a loop such that it slides the CUT across range doppler map by
@@ -172,7 +173,6 @@ offset = 4.5;
 %it a value of 1, else equate it to 0. Use RDM[x,y] as the matrix from the 
 % output of 2D FFT for implementing CFAR.
 
-count = 0;
 RDM_cfar = zeros(size(RDM));
 total_training_cells = (2*Tr+2*Gr+1)*(2*Td+2*Gd+1) - (2*Gr+1)*(2*Gd+1);
                         
@@ -198,7 +198,6 @@ for i=Tr+Gr+1:(Nr/2)-(Tr+Gr)
         current_signal_value = RDM(i,j);
 
         if (current_signal_value > threshold)
-            count = count +1;
             RDM_cfar(i,j) = 1;
         else
             RDM_cfar(i,j) = 0;
@@ -219,6 +218,9 @@ end
 %Doppler Response output.
 figure,surf(doppler_axis,range_axis,RDM_cfar);
 colorbar;
+title('Range and Velocity from Second FFT w/ Noise Suppression')
+xlabel('Velocity (m/s)')
+ylabel('Distance (m)')
 
 
 %% 2D CFAR Steps
