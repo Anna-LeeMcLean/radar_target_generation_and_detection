@@ -1,5 +1,5 @@
 # Radar Target Generation And Detection
-The aim of this project is to simulate transmitted and received radar signals from a moving target then detect the target within the simulated signals and determine its displacement from the radar using FFT and CA-CFAR.
+The aim of this project is to simulate transmitted and received radar signals from a moving target then detect the target within the simulated signals and determine its displacement and velocity relative to the radar using FFT and CA-CFAR.
 
 ## Project Layout
 
@@ -46,12 +46,12 @@ The 2D FFT plot shows numerous noise spikes. To suppress this noise, CA-CFAR was
 
 *Figure 4: 2D FFT showing target distance and velocity after noise suppression*
 
-The threshold is determined by averaging the training cells around every cells in a Range-Doppler Map while avoiding guard cells so that the average doesn't consider the cell under test.
+The noise threshold is determined by averaging the training cells around every cell in a Range-Doppler Map while avoiding guard cells so that the average doesn't consider the cell under test.
 ![image](https://github.com/Anna-LeeMcLean/radar_target_generation_and_detection/assets/60242931/a49343fa-dc2f-41fa-bcaa-c1d24cee2d6e)
 
 *Figure 5: CA-CFAR grid used to determine noise threshold for a Cell Under Test (CUT)*
 
-Figure 5 shows the training and gurad cells around the cell under test (CUT). After averaging the training cells, an offset is added to the threshold which allows for added padding and easy tuning of the threshold value.  
+Figure 5 shows the training and guard cells around the cell under test (CUT). After averaging the training cells, an offset is added to the threshold which allows for added padding and easy tuning of the threshold value.  
 
 | CA-CFAR Specs | Value |
 |-|-|
@@ -62,3 +62,6 @@ Figure 5 shows the training and gurad cells around the cell under test (CUT). Af
 | Offset | 4.5 |
 
 The offset was increased from an initial value of 1.5 to 4.5 after observing that most of the noise spikes were still present. Increasing the threshold by this offset allowed for larger noise spikes to be suppressed without cutting off the real signal values. All signal values at the CUT were suppressed to 0 if they were below the threshold while values which were above the threshold were set to 1. The new values were stored at their same locations in a new matrix which was the same size as the original RDM matrix. While the CFAR grid is at the edges of the Range Doppler map, the cells within the training and guard cell areas cannot be tested as CUTs because they would not have sufficient training/guard cells around them. Initializing the new RDM matrix as zeros allows these cells that are not processed to remain as zeros.
+
+### Launch Requirements
+* MATLAB >= R2023b
